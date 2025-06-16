@@ -1,0 +1,91 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+	<head>
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<!--bokeh-->
+		<link rel="stylesheet" type="text/css" href="http://cdn.pydata.org/bokeh/release/bokeh-3.7.3.min.css"/>
+		<link rel="stylesheet" type="text/css" href="http://cdn.pydata.org/bokeh/release/bokeh-widgets-3.7.3.min.css"/>
+		<link rel="stylesheet" type="text/css" href="http://cdn.pydata.org/bokeh/release/bokeh-tables-3.7.3.min.css"/>
+
+		<link rel="stylesheet" href="https://cdn.bokeh.org/bokeh/release/bokeh-3.7.3.min.css" type="text/css">
+		<script src="https://cdn.bokeh.org/bokeh/release/bokeh-3.7.3.min.js"></script>
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+		<!--bmi style-->
+		<link rel="stylesheet" href="{% static "bmi/style.css" %}">
+		<title>Bmi Calculator</title>
+	</head>
+	<body>
+		<header>
+			<nav class="navbar navbar-expand-lg bg-secondary py-2 mb-3">
+				<div class="container-fluid">
+					<a class="navbar-brand text-white" href="{% url 'dashboard' %}">Home</a>
+					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+					<div class="collapse navbar-collapse" id="navbarSupportedContent">
+						<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+							{% comment %} <li class="nav-item">
+								<a class="nav-link active" aria-current="page" href="{% url 'dashboard' %}">Home</a>
+							</li> {% endcomment %}
+							<li class="nav-item">
+								<a class="nav-link text-white" href="{% url 'home' %}">Bmi</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link text-white" href="{% url 'tasks' %}">Tasks</a>
+							</li>
+							
+						</ul>
+
+						<div class="d-flex ml-auto">
+							<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+								{% if request.user.is_authenticated %}
+									<li class="nav-item">
+									<form method="post" action="{% url 'account_logout' %}">
+										{% csrf_token %}
+										<button type="submit" class="btn btn-outline-danger text-white">Logout</button>
+									</form>
+									</li>
+								{% else %}
+									<li class="nav-item">
+									<a href="{% url 'account_login' %}" class="nav-link text-white">Login</a>
+									</li>
+									<li class="nav-item">
+									<a href="{% url 'account_signup' %}" class="nav-link text-white">SignUp</a>
+									</li>
+								{% endif %}
+								
+							</ul>
+						</div>
+
+					</div>
+				</div>
+			</nav>
+
+		</header>
+		{% block content %}
+		{% endblock content %}
+		<!--Bokeh-->
+		<script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-2.1.1.min.js"></script>
+		<script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-widgets-2.1.1.min.js"></script>
+		<script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-tables-2.1.1.min.js"></script>
+		<script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-api-2.1.1.min.js"></script>
+
+		<!-- Optional JavaScript -->
+		<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+		{% comment %} {{script|safe}} {% endcomment %}
+		<!--custom scripts-->
+		<script type="text/javascript" src="{% static "bmi/custom.js" %}"></script>
+	</body>
+</html>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('[data-toggle="popover"]').popover();
+  });
+</script>

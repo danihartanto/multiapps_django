@@ -1,0 +1,57 @@
+{% extends "dashboard/base.html" %}
+{% block content %}
+
+<div class="container-fluid px-4">
+        <h1 class="mt-4">Dashboard</h1>
+        <p>Selamat datang, <strong>{{ user.username }}</strong>!</p>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">Dashboard</li>
+    </ol>
+    <div class="row">
+        <h2>Dashboard Log Aktivitas</h2>
+
+        <form method="get">
+            <input type="text" name="q" placeholder="Cari..." value="{{ query }}">
+            <button type="submit">Cari</button>
+            <a href="{% url 'export_user_logs' %}">Ekspor CSV</a>
+        </form>
+
+        <table class="table table-striped mt-3">
+            <thead>
+                <tr>
+                    <th>Time Access</th>
+                    <th>User</th>
+                    <th>Method</th>
+                    <th>Path</th>
+                    <th>IP Address</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in page_obj %}
+                    <tr>
+                        <td>{{ log.timestamp }}</td>
+                        <td>{{ log.user.username }}</td>
+                        <td>{{ log.method }}</td>
+                        <td>{{ log.path }}</td>
+                        <td>{{ log.ip_address }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="5">Tidak ada data</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div>
+            {% if page_obj.has_previous %}
+                <a href="?q={{ query }}&page={{ page_obj.previous_page_number }}">← Sebelumnya</a>
+            {% endif %}
+            <span>Halaman {{ page_obj.number }}</span>
+            {% if page_obj.has_next %}
+                <a href="?q={{ query }}&page={{ page_obj.next_page_number }}">Berikutnya →</a>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% comment %} {{div|safe}}     {% endcomment %}
+{% endblock content %}

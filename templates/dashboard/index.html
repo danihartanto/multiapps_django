@@ -1,0 +1,112 @@
+{% extends "dashboard/base.html" %}
+{% block content %}
+
+<div class="container-fluid px-4">
+        <h1 class="mt-4">Dashboard</h1>
+        <p>Selamat datang, <strong>{{ user.username }}</strong>!</p>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">Dashboard</li>
+    </ol>
+    <div class="row">
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-primary text-white mb-4">
+                <div class="card-body">Kalkulator BMI</div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href="{% url 'home' %}">View Details</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-success text-white mb-4">
+                <div class="card-body">Task Jobs</div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href="{% url 'tasks' %}">View Details</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-warning text-white mb-4">
+                <div class="card-body">Math Games</div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href="{% url 'mathgame' %}">View Details</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-danger text-white mb-4">
+                <div class="card-body">Tebak Huruf Game</div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href="{% url 'hangman' %}">View Details</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chart-area me-1"></i>
+                    Leaderboard Mtah Games
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped mt-3">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Pemain</th>
+                                <th>Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for score in top_scores %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ score.user__username }}</td>
+                                <td>{{ score.total_score }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chart-bar me-1"></i>
+                    Leaderboard Tebak Kata Games
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Peringkat</th>
+                                <th>Username</th>
+                                <th>Skor</th>
+                                <th>Waktu</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for score in scores %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ score.user.username }}</td>
+                                    <td>{{ score.score }}</td>
+                                    <td>{{ score.created_at|date:"Y-m-d H:i" }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr><td colspan="4" class="text-center">Belum ada skor</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% comment %} {{div|safe}}     {% endcomment %}
+{% endblock content %}

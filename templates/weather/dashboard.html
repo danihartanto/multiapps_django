@@ -1,0 +1,173 @@
+{% extends "dashboard/base.html" %}
+{% block content %}
+
+<div class="container-fluid px-4">
+    <ol class="breadcrumb mt-3 mb-4">
+        <li class="breadcrumb-item"><a href="{% url 'weather' %}">Prediksi cuaca</a></li>
+        <li class="breadcrumb-item active">dashboard</li>
+    </ol>
+    <div class="row">
+        <h1>Prediksi Cuaca Historis {{ last_date }}</h1>
+        <!-- Prediksi Cuaca -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-header">Prediksi Suhu Besok {{ besok }}</div>
+                <div class="card-body">
+                <h5 class="card-title">{{ predicted_temp }}</h5>
+                </div>
+            </div>
+            </div>
+            <div class="col-md-6">
+            <div class="card text-white bg-secondary mb-3">
+                <div class="card-header">Prediksi Kondisi Cuaca Besok Tanggal: {{ besok }}</div>
+                <div class="card-body">
+                <h5 class="card-title">{{ predicted_condition }}</h5>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                Grafik Suhu 3 Hari Terakhir
+            </div>
+            <div class="card-body">
+                <canvas id="weatherChart" height="120"></canvas>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                Grafik Suhu Berdasarkan Waktu (Date + Hour)
+            </div>
+            <div class="card-body">
+                <canvas id="datetimeChart" height="120"></canvas>
+            </div>
+        </div>
+
+        
+
+        <!-- Tabel Data Historis -->
+        <div class="card mb-4">
+            <div class="card-header">
+            Data Cuaca Historis
+            </div>
+            <div class="card-body table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th>Tanggal</th>
+                    <th>Suhu (°C)</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for d, t in date_temp_list %}
+                <tr>
+                    <td>{{ d }}</td>
+                    <td>{{ t }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+  const labels = {{ timestamps_3days|safe }};
+  const data = {{ temperatures_3days|safe }};
+
+  const ctx = document.getElementById('weatherChart').getContext('2d');
+  const weatherChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Suhu (°C)',
+        data: data,
+        fill: true,
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        tension: 0.4,
+        pointRadius: 3
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          display: true
+        },
+        tooltip: {
+          mode: 'index',
+          intersect: false
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            maxTicksLimit: 15,
+            autoSkip: true
+          },
+          title: {
+            display: true,
+            text: 'Tanggal & Jam'
+          }
+        },
+        y: {
+          beginAtZero: false,
+          title: {
+            display: true,
+            text: 'Suhu (°C)'
+          }
+        }
+      }
+    }
+  });
+</script>
+<script>
+  const datetimeLabels = {{ timestamps|safe }};
+  const tempData = {{ temperatures|safe }};
+
+  const ctx2 = document.getElementById('datetimeChart').getContext('2d');
+  const datetimeChart = new Chart(ctx2, {
+    type: 'line',
+    data: {
+      labels: datetimeLabels,
+      datasets: [{
+        label: 'Suhu (°C)',
+        data: tempData,
+        fill: true,
+        borderColor: 'rgb(5, 127, 214)',
+        backgroundColor: 'rgba(85, 91, 145, 0.2)',
+        tension: 0.4,
+        pointRadius: 3
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        x: {
+          ticks: {
+            maxTicksLimit: 20,
+            autoSkip: true
+          },
+          title: {
+            display: true,
+            text: 'Tanggal & Jam'
+          }
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Suhu (°C)'
+          }
+        }
+      }
+    }
+  });
+</script>
+
+{% endblock content %}

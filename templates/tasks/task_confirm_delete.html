@@ -1,0 +1,30 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Delete Task{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <ol class="breadcrumb mt-3 mb-4">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item active">delete tasks</li>
+    </ol>
+
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow-sm rounded-3">
+                
+                <div class="card-body">
+                    <div class="row">
+                        <h2>Are you sure you want to delete task "{{ task.title }}"?</h2>
+                        <form method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                            <a href="{% url 'tasks' %}" class="btn btn-secondary">Cancel</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends "dashboard/base.html" %}
+{% block content %}
+<div class="container-fluid px-4">
+    <ol class="breadcrumb mt-3 mb-4">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item active">Bmi</li>
+    </ol>
+
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow-sm rounded-3">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">📖 Calculate BMI</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="col-12">
+                            <label for="">Berat Badan (dalam kg): </label>
+                            <input type="text" name="weight-metric" class="form-control" required placeholder="kg">
+                            </div>
+                            <div class="col-12">
+                            <label for="">Tinggi Badan (dalam meter): </label>
+                            <input type="text" name="height-metric" class="form-control" required placeholder="m">
+                            </div>
+                            {% if request.user.is_authenticated %}
+                            <div class="form-check my-3">
+                            <input class="form-check-input" checked="checked" name="save" value="on" type="checkbox">
+                            <label for="" class="form-check-label">Save to DB.
+                                <a href="#" title="Why to save it?" data-toggle="popover" data-trigger="focus"
+                                data-content="In case you want to track your weight, you can save it.(login required)">?</a>
+                            </label>
+                            </div>
+                            {% else %}
+                            <div class="form-check my-3">
+                                <input disabled class="form-check-input" checked="checked" name="save" value="on" type="checkbox">
+                                <label for="" class="form-check-label">Save to  DB.
+                                    <a href="#" title="Why to save it?" data-toggle="popover" data-trigger="focus"
+                                    data-content="In case you want to track your weight, you can save it.(login required)">?</a>
+                                </label>
+                            </div>
+                            {% endif %}
+                            <button type="submit" class="btn btn-primary" action="{% url 'home' %}">Calculate</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-3">
+        <div class="col-md-10">
+            <div class="card shadow-sm rounded-3">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">📖 Result BMI</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Hasil BMI -->
+                    {% if bmi %}
+                    <div class="alert alert-info text-center">
+                        <h4 class="mb-0">BMI Anda: <strong>{{ bmi }}</strong> - {{ state }}</h4>
+                    </div>
+                    {% endif %}
+
+                    <!-- Grafik BMI -->
+                    {% if script and div %}
+                    
+                            {{ script|safe }}
+                            {{ div|safe }}
+                        
+                    {% else %}
+                    <div class="alert alert-warning text-center">
+                        Tidak ada data BMI tersimpan. Silakan isi form terlebih dahulu.
+                    </div>
+                    {% endif %}
+
+                    <!-- Tombol kembali atau navigasi lain jika perlu -->
+                    {% comment %} <div class="text-center">
+                        <a href="/" class="btn btn-outline-secondary">Kembali ke Form</a>
+                    </div> {% endcomment %}
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+{% comment %} {{div|safe}}     {% endcomment %}
+{% endblock content %}

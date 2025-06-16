@@ -1,0 +1,41 @@
+{% extends "dashboard/base.html" %}
+{% block content %}
+<div class="container-fluid px-4">
+    <ol class="breadcrumb mt-3 mb-4">
+        <li class="breadcrumb-item"><a href="{% url 'mathgame' %}">Math Game</a></li>
+        <li class="breadcrumb-item active">Leaderboard</li>
+    </ol>
+
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow-sm rounded-3">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">📖 Riwayat Permainan</h5>
+                </div>
+                <div class="card-body">
+                    <h2>🏆 Leaderboard</h2>
+                    <table class="table table-striped mt-3">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>User</th>
+                                <th>Total Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for score in top_scores %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ score.user__username }}</td>
+                                <td>{{ score.total_score }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <a href="{% url 'mathgame' %}" class="btn btn-secondary">← Back to Game</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

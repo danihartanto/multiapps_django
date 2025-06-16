@@ -1,0 +1,88 @@
+{% extends "dashboard/base.html" %}
+{% block content %}
+<div class="container-fluid px-4">
+    <ol class="breadcrumb mt-3 mb-4">
+        <li class="breadcrumb-item"><a href="{% url 'mathgame' %}">Math Game</a></li>
+        <li class="breadcrumb-item active">Riwayat Skor</li>
+    </ol>
+
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow-sm rounded-3">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">📖 Riwayat Permainan</h5>
+                </div>
+                <div class="card-body">
+                    {% if scores %}
+                        <div class="row">
+                            <form method="get" class="row gy-2 gx-3 align-items-end mb-4">
+                                <div class="col-md-3">
+                                    <label class="form-label">Dari Tanggal</label>
+                                    <input type="date" name="start_date" class="form-control" value="{{ filters.start_date }}">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Sampai Tanggal</label>
+                                    <input type="date" name="end_date" class="form-control" value="{{ filters.end_date }}">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Min. Persentase (%)</label>
+                                    <input type="number" step="0.01" min="0" max="100" name="min_percent" class="form-control" value="{{ filters.min_percent }}">
+                                </div>
+                                <div class="col-md-3 d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary mt-4">🔍 Filter</button>
+                                    <a href="{% url 'mathgame_history' %}" class="btn btn-secondary mt-4">♻️ Reset</a>
+                                </div>
+                            </form>
+
+                            <table class="table table-hover table-responsive table-bordered align-middle" id="example0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Tanggal</th>
+                                        <th>Skor</th>
+                                        <th>Total Pertanyaan</th>
+                                        <th>Persentase</th>
+                                        <th>Level</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for score in scores %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ score.created_at|date:"d M Y H:i" }}</td>
+                                            <td>{{ score.score }}</td>
+                                            <td>{{ score.total_questions }}</td>
+                                            <td>
+                                                <span class="badge {% if score.percentage >= 90.0 %}bg-success{% elif score.percentage >= 75 %}bg-info{% elif score.percentage < 50 %}bg-danger{% else %}bg-secondary{% endif %}">
+                                                    {{ score.percentage }}%
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge 
+                                                    {% if score.level == 'easy' %} bg-success
+                                                    {% elif score.level == 'medium' %} bg-secondary
+                                                    {% else %} bg-danger
+                                                    {% endif %}">
+                                                    {{ score.level|capfirst }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            ❌ Belum ada riwayat permainan.
+                        </div>
+                    {% endif %}
+
+                    <a href="{% url 'mathgame' %}" class="btn btn-outline-primary mt-3">
+                        ← Kembali ke Game
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

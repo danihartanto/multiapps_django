@@ -1,0 +1,77 @@
+{% extends "dashboard/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container-fluid px-4">
+    <ol class="breadcrumb mb-4 mt-2">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">dashboard</a></li>
+        <li class="breadcrumb-item active">Analisis Sentimen</li>
+    </ol>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow rounded-3">
+                <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
+                    <h2 class="card-title mb-0 text-primary">
+                        🧠 Analisis Sentimen
+                    </h2>
+                    
+                </div>
+                <div class="card-body">
+                    <h1 class="mb-4">Analisis Sentimen Berbasis Leksikon</h1>
+
+                    <form method="post" class="mb-4">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <div class="mt-3">
+                            <button type="submit" class="btn btn-success">Analisis</button>
+                            <a href="{{ request.path }}" class="btn btn-outline-danger">Reset</a>
+                        </div>
+                    </form>
+
+                    {% if result %}
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Hasil Analisis</h5>
+                            <p><strong>Teks Asli:</strong><br>{{ result.original }}</p>
+                            {% if result %}
+                                <p><strong>Text Setelah Cleaning & Stemming:</strong><br>{{ result.processed }}</p>
+                            {% endif %}
+                            <p><strong>Skor Total:</strong> {{ result.score }}</p>
+                            <p><strong>Kategori Sentimen:</strong> 
+                                <b>
+                                    <span
+                                        {% if result.label == 'negative' %}
+                                        class="text-danger"
+                                        {% elif result.label == 'positive' %}
+                                        class="text-success"
+                                        {% else %}
+                                        class="text-secondary"
+                                        {% endif %}
+                                    >
+                                        {{ result.label|title }}
+                                    </span>
+                                </b>
+                            </p>
+                            <p><strong>Token(kata) Terdeteksi:</strong> {{ result.tokens|join:", " }}</p>
+
+                            <p><strong>Kata dalam Leksikon:</strong></p>
+                            <ul>
+                                {% for word, score in result.matched %}
+                                    <li>{{ word }}: {{ score }}</li>
+                                {% empty %}
+                                    <li><em>Tidak ada kata yang cocok.</em></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="card-footer">
+                            <p class="text-black-50"><small>Dataset lexicon dari: <a href="https://github.com/fajri91/InSet" target="_blank">fajri91/InSet</a></small> </p>
+
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
