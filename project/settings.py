@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'weather',
     'analisis_sentimen',
     'log_dashboard',
+    'chatbot',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',

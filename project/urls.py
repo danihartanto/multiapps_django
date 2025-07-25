@@ -28,6 +28,7 @@ urlpatterns = [
     path('weather/', include('weather.urls')), #NEW
     path('analisis_sentimen/', include('analisis_sentimen.urls')), #NEW
     path('log_dashboard/', include('log_dashboard.urls')), #NEW
+    path('', include('chatbot.urls')), #NEW
     path('accounts/', include('allauth.urls')),
     path("accounts/logout/", CustomLogoutView.as_view(), name="logout"),
     

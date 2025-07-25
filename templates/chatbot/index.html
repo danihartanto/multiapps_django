@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Chatbot Django</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .chat-container {
+      background: white;
+      width: 400px;
+      max-width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .chat-header {
+      background-color: #4a90e2;
+      padding: 16px;
+      color: white;
+      font-size: 18px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .chat-box {
+      padding: 16px;
+      height: 400px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .message {
+      max-width: 70%;
+      padding: 10px 14px;
+      border-radius: 16px;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+
+    .user-message {
+      background: #d1edc1;
+      align-self: flex-end;
+      border-bottom-right-radius: 0;
+    }
+
+    .bot-message {
+      background: #f0f0f0;
+      align-self: flex-start;
+      border-bottom-left-radius: 0;
+    }
+
+    .chat-input {
+      display: flex;
+      border-top: 1px solid #ddd;
+    }
+
+    .chat-input input {
+      flex: 1;
+      border: none;
+      padding: 14px;
+      font-size: 14px;
+    }
+
+    .chat-input button {
+      background-color: #4a90e2;
+      color: white;
+      border: none;
+      padding: 14px 20px;
+      cursor: pointer;
+    }
+
+    .chat-input input:focus,
+    .chat-input button:focus {
+      outline: none;
+    }
+
+    @media (max-width: 480px) {
+      .chat-container {
+        width: 100%;
+        height: 100vh;
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="chat-header">💬 Chatbot Django</div>
+    <div id="chat-box" class="chat-box"></div>
+    <div class="chat-input">
+      <input type="text" id="message" placeholder="Ketik sesuatu..." onkeypress="checkEnter(event)" />
+      <button onclick="sendMessage()">Kirim</button>
+    </div>
+  </div>
+
+  <script>
+    async function sendMessage() {
+      const input = document.getElementById('message');
+      const msg = input.value.trim();
+      if (!msg) return;
+
+      appendMessage(msg, 'user-message');
+      input.value = '';
+
+      const response = await fetch('/chat/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: msg })
+      });
+
+      const data = await response.json();
+      appendMessage(data.reply, 'bot-message');
+    }
+
+    function appendMessage(text, className) {
+      const chatBox = document.getElementById('chat-box');
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `message ${className}`;
+      msgDiv.innerText = text;
+      chatBox.appendChild(msgDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function checkEnter(event) {
+      if (event.key === "Enter") {
+        sendMessage();
+      }
+    }
+  </script>
+</body>
+</html>
