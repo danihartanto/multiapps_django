@@ -103,11 +103,24 @@
                                     </div>
                                 </nav>
                             </div>
-                            <div class="sb-sidenav-menu-heading">Activity</div>
-                            <a class="nav-link" href="{% url 'log_dashboard' %}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                Logs
-                            </a>
+                            {% if user.is_authenticated and user.is_staff %}
+                                <div class="sb-sidenav-menu-heading">Master Data</div>
+                                <a class="nav-link" href="{% url 'data_lexicon' %}">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                                    List Data Lexicon
+                                </a>
+                                <a class="nav-link" href="{% url 'sentiment_history' %}">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                                    History Analisa Sentimen
+                                </a>
+
+                                <div class="sb-sidenav-menu-heading">Activity</div>
+                                <a class="nav-link" href="{% url 'log_dashboard' %}">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                    Logs
+                                </a>
+                            {% endif %}
+                            
                             {% comment %} <div class="sb-sidenav-menu-heading">Addons</div>
                             <a class="nav-link" href="charts.html">
                                 <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
@@ -121,7 +134,14 @@
                     </div>
                     <div class="sb-sidenav-footer">
                         <div class="small">Logged in as:</div>
-                        Start Bootstrap
+                        
+                        {% if user.is_staff == False %}
+                            <p><strong>{{ user.username }}</strong> | <strong>NOT STAFF</strong></p>
+                        {% endif %}
+                        {% if user.is_staff == True %}
+                            <p><strong>{{ user.username }}</strong> | <strong>IS STAFF</strong></p>
+                        {% endif %}
+                        
                     </div>
                 </nav>
             </div>
