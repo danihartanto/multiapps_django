@@ -4,7 +4,7 @@ from .models import PlayerScore
 import random
 
 # Daftar kata (bisa diimprove nanti)
-WORDS = ['python', 'django', 'hangman', 'framework', 'backend', 'function', 'variable']
+WORDS = ['python', 'django', 'frontend', 'framework', 'backend', 'function', 'variable']
 
 def init_game(session):
     word = random.choice(WORDS)

@@ -17,9 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from accounts.views import CustomLogoutView
+from landing.views import home
 
 urlpatterns = [
-    path('', include("dashboard.urls")),#NEW
+    path('', home, name='landing'),  # <-- landing page
+    # path('', include("landing.urls")),#NEW
+    path('dashboard/', include("dashboard.urls")),#NEW
     path('admin/', admin.site.urls),
     path('bmi/', include("bmi.urls")), #NEW
     path('tasks/', include("tasks.urls")), #NEW
@@ -29,7 +32,12 @@ urlpatterns = [
     path('analisis_sentimen/', include('analisis_sentimen.urls')), #NEW
     path('log_dashboard/', include('log_dashboard.urls')), #NEW
     path('', include('chatbot.urls')), #NEW
+    path('cuaca/', include('cuaca.urls')), #NEW
+    path('secretpassword/', include('secret_password.urls')), #NEW
+    path('backup/', include('backup_db.urls')), #NEW
     path('accounts/', include('allauth.urls')),
+    # path('accounts/', include('django.contrib.auth.urls')), 
     path("accounts/logout/", CustomLogoutView.as_view(), name="logout"),
+    
     
 ]

@@ -1,0 +1,47 @@
+{% load static %}
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Stylish Portfolio - Start Bootstrap Template</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <!-- Font Awesome icons (free version)-->
+        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+        <!-- Simple line icons-->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.5.5/css/simple-line-icons.min.css" rel="stylesheet" />
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="{% static "css/styles.css" %}" rel="stylesheet" />
+    </head>
+<body class="bg-light d-flex align-items-center" style="height: 100vh;">
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow">
+                <div class="card-header text-center bg-primary text-white">
+                    <h4>Daftar Akun Baru</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'account_signup' %}">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        {% comment %} {{ form.as_p }} {% endcomment %}
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Daftar</button>
+                        </div>
+                    </form>
+                    <hr>
+                    <p class="text-center">Sudah punya akun? <a href="{% url 'account_login' %}">Masuk</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,28 @@
+{% extends "dashboard/base.html" %}
+{% block content %}
+
+<div class="container-fluid px-4">
+    <ol class="breadcrumb mt-3 mb-4">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item active">Secret Password</li>
+    </ol>
+    <div class="row">
+        <h2>One Time Secret Password</h2>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="row py-5 text-center">
+                    <h2 class="text-danger">🧩 Oopsss 🧩</h2>
+                    <p>Halaman sudah tidak tersedia demi keamanan.</p>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <a href="{% url 'create_secret' %}" class="btn btn-primary">➕ Buat Secret Baru</a>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+</div>
+{% comment %} {{div|safe}}     {% endcomment %}
+{% endblock content %}

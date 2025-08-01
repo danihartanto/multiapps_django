@@ -1,0 +1,16 @@
+{% extends "dashboard/base.html" %}
+{% block content %}
+
+<div class="container-fluid px-4">
+    <ol class="breadcrumb mt-3 mb-4">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item active">Prakiraan Cuaca</li>
+    </ol>
+    <div class="row">
+        <h2>ERROR</h2>
+        <p>{{ message }}</p>
+    </div>
+
+</div>
+{% comment %} {{div|safe}}     {% endcomment %}
+{% endblock content %}
