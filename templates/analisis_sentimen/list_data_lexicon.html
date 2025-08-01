@@ -1,0 +1,186 @@
+{% extends "dashboard/base.html" %}
+{% block content %}
+
+<!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+
+    <style>
+        body { padding: 20px; }
+    </style>
+<div class="container-fluid px-4">
+    <ol class="breadcrumb mt-3 mb-4">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item active">List Data Lexicon</li>
+    </ol>
+    <div class="row">
+        <h2>List Data Lexicon</h2>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="mb-4">
+                    <h5>Tambah Kata Baru</h5>
+                    <div class="row g-2">
+                        <div class="col-md-3">
+                            <input type="text" id="newWord" class="form-control" placeholder="Kata">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="number" step="0.1" id="newWeight" class="form-control" placeholder="Skor (misal: -2.0)">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="number" id="newCount" class="form-control" placeholder="Jumlah Kata (misal: 1.0)">
+                        </div>
+                        <div class="col-md-3">
+                            <button id="btnAddLexicon" class="btn btn-primary w-100">Tambah</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="table-responsive">
+                            <table id="lexiconTable" class="table table-bordered table-striped">
+                                <thead class="table-light">
+                                    <tr>
+                                        {% for header in headers %}
+                                            <th>{{ header }}</th>
+                                        {% endfor %}
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for row in data %}
+                                    {% if row|length == headers|length %}
+                                    <tr data-row="{{ forloop.counter0 }}">
+                                        {% for item in row %}
+                                            <td contenteditable="true">{{ item }}</td>
+                                        {% endfor %}
+                                        <td>
+                                        <button class="btn btn-sm btn-danger btnDelete" data-index="{{ row.0 }}">Hapus</button>
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+
+</div>
+<!-- JS: jQuery + DataTables -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+$(document).ready(function () {
+    const table = $('#lexiconTable').DataTable({
+        pageLength: 10,
+        lengthMenu: [5, 10, 25, 50, 100],
+        language: {
+            search: "Cari:",
+            lengthMenu: "Tampilkan _MENU_ entri",
+            info: "Menampilkan _START_ hingga _END_ dari _TOTAL_ entri",
+            paginate: {
+                previous: "Sebelumnya",
+                next: "Berikutnya"
+            },
+            zeroRecords: "Tidak ada hasil ditemukan"
+        }
+    });
+
+    //update data
+    $('#lexiconTable tbody').on('blur', 'td[contenteditable="true"]', function () {
+        const cell = $(this);
+        const row = cell.closest('tr');
+        const rowData = [];
+
+        row.find('td').each(function () {
+            rowData.push($(this).text().trim());
+        });
+
+        $.ajax({
+            url: "{% url 'update_lexicon_entry' %}",
+            method: "POST",
+            headers: { "X-CSRFToken": "{{ csrf_token }}" },
+            data: {
+                index: rowData[0],
+                word: rowData[1],
+                weight: rowData[2],
+                number_of_words: rowData[3]
+            },
+            success: function () {
+                console.log("Update berhasil");
+            },
+            error: function () {
+                alert("Gagal mengupdate data.");
+            }
+        });
+    });
+
+});
+
+{% comment %} Tambah data {% endcomment %}
+$('#btnAddLexicon').on('click', function () {
+    const word = $('#newWord').val().trim();
+    const weight = $('#newWeight').val().trim();
+    const number_of_words = $('#newCount').val().trim();
+
+    if (!word || !weight || !number_of_words) {
+        alert("Semua kolom wajib diisi!");
+        return;
+    }
+
+    $.ajax({
+        url: "{% url 'add_lexicon_entry' %}",
+        method: "POST",
+        headers: { "X-CSRFToken": "{{ csrf_token }}" },
+        data: { word, weight, number_of_words },
+        success: function (res) {
+            alert("Berhasil menambahkan data!");
+
+            // Clear form
+            $('#newWord').val('');
+            $('#newWeight').val('');
+            $('#newCount').val('');
+
+            // Optional: Reload halaman atau tambahkan baris ke tabel secara langsung
+            location.reload();  // ← cara cepat
+        },
+        error: function (err) {
+            alert("Gagal menambahkan data! [data sudah ada, format tidak sesuai]");
+            console.error(err);
+        }
+    });
+});
+
+{% comment %} Hapus data {% endcomment %}
+$('#lexiconTable tbody').on('click', '.btnDelete', function () {
+    const index = $(this).data('index');
+
+    if (!confirm("Hapus baris dengan index: " + index + " ?")) return;
+
+    $.ajax({
+        url: "{% url 'delete_lexicon_entry' %}",
+        method: "POST",
+        headers: { "X-CSRFToken": "{{ csrf_token }}" },
+        data: { index: index },
+        success: function () {
+            alert("Berhasil dihapus!");
+            location.reload();
+        },
+        error: function () {
+            alert("Gagal menghapus baris.");
+        }
+    });
+});
+
+
+</script>
+
+{% comment %} {{div|safe}}     {% endcomment %}
+{% endblock content %}

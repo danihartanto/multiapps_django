@@ -1,0 +1,63 @@
+{% extends "dashboard/base.html" %}
+{% block content %}
+
+<div class="container-fluid px-4">
+    <ol class="breadcrumb mt-3 mb-4">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item active">Secret Password</li>
+    </ol>
+    <div class="row">
+        <h2>One Time Secret Password</h2>
+
+        <div class="card">
+            <div class="card-header">
+                <a class="btn btn-outline-success link-opacity-50-hover" href="{% url 'create_secret' %}">➕ Buat Secret Baru</a>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <h2 class="mb-4">🎉 Secret Telah Dibuat</h2>
+                    <div class="col-12">
+                        <div class="mb-3">
+                            <label for="secretLink" class="form-label">Link Rahasia:</label>
+                            <input type="text" id="secretMessage" class="form-control" value="{{ message }}" readonly>
+                            <br>
+                            <button class="btn btn-success mb-3 mt-3" onclick="copySecret()">📋 Salin Link</button>
+                        </div>
+                        <p><em>Pesan ini hanya bisa dibuka satu kali dan sekarang telah dihapus.</em></p>
+                    </div>
+                    <p class="mt-4 text-muted">
+                        Halaman ini akan ditutup otomatis dalam <span id="timer">60</span> detik...
+                    </p>
+                        
+                    
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+</div>
+<script>
+function copySecret() {
+    var textArea = document.getElementById("secretMessage");
+    textArea.select();
+    textArea.setSelectionRange(0, 99999); // Untuk mobile
+    document.execCommand("copy");
+    alert("Pesan telah disalin ke clipboard.");
+
+    // Timer auto-redirect setelah 60 detik
+    let seconds = 60;
+    const timerDisplay = document.getElementById("timer");
+
+    const countdown = setInterval(() => {
+        seconds--;
+        timerDisplay.innerText = seconds;
+        if (seconds <= 0) {
+            clearInterval(countdown);
+            window.location.href = "/secretpassword/expired/"; // atau halaman beranda / logout / blank
+        }
+    }, 1000);
+}
+</script>
+{% comment %} {{div|safe}}     {% endcomment %}
+{% endblock content %}

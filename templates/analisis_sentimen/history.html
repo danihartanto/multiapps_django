@@ -1,88 +1,225 @@
 {% extends "dashboard/base.html" %}
 {% block content %}
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+
+<style>
+    body { padding: 20px; }
+</style>
 <div class="container-fluid px-4">
     <ol class="breadcrumb mt-3 mb-4">
-        <li class="breadcrumb-item"><a href="{% url 'mathgame' %}">Math Game</a></li>
-        <li class="breadcrumb-item active">Riwayat Skor</li>
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item active">List Data Lexicon</li>
     </ol>
+    <div class="row">
+        <h2>List Data Lexicon</h2>
 
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            <div class="card shadow-sm rounded-3">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">📖 Riwayat Permainan</h5>
-                </div>
-                <div class="card-body">
-                    {% if scores %}
-                        <div class="row">
-                            <form method="get" class="row gy-2 gx-3 align-items-end mb-4">
-                                <div class="col-md-3">
-                                    <label class="form-label">Dari Tanggal</label>
-                                    <input type="date" name="start_date" class="form-control" value="{{ filters.start_date }}">
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">Sampai Tanggal</label>
-                                    <input type="date" name="end_date" class="form-control" value="{{ filters.end_date }}">
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">Min. Persentase (%)</label>
-                                    <input type="number" step="0.01" min="0" max="100" name="min_percent" class="form-control" value="{{ filters.min_percent }}">
-                                </div>
-                                <div class="col-md-3 d-flex gap-2">
-                                    <button type="submit" class="btn btn-primary mt-4">🔍 Filter</button>
-                                    <a href="{% url 'mathgame_history' %}" class="btn btn-secondary mt-4">♻️ Reset</a>
-                                </div>
-                            </form>
-
-                            <table class="table table-hover table-responsive table-bordered align-middle" id="example0">
-                                <thead class="table-light">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="table-responsive">
+                            <table id="historyTable" class="table table-bordered table-striped">
+                                <thead>
                                     <tr>
-                                        <th>#</th>
                                         <th>Tanggal</th>
-                                        <th>Skor</th>
-                                        <th>Total Pertanyaan</th>
-                                        <th>Persentase</th>
-                                        <th>Level</th>
+                                        <th>Text Input</th>
+                                        <th>Matched Words</th>
+                                        <th>Label</th>
+                                        <th>Score</th>
+                                        <th cols="2">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for score in scores %}
-                                        <tr>
-                                            <td>{{ forloop.counter }}</td>
-                                            <td>{{ score.created_at|date:"d M Y H:i" }}</td>
-                                            <td>{{ score.score }}</td>
-                                            <td>{{ score.total_questions }}</td>
-                                            <td>
-                                                <span class="badge {% if score.percentage >= 90.0 %}bg-success{% elif score.percentage >= 75 %}bg-info{% elif score.percentage < 50 %}bg-danger{% else %}bg-secondary{% endif %}">
-                                                    {{ score.percentage }}%
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <span class="badge 
-                                                    {% if score.level == 'easy' %} bg-success
-                                                    {% elif score.level == 'medium' %} bg-secondary
-                                                    {% else %} bg-danger
-                                                    {% endif %}">
-                                                    {{ score.level|capfirst }}
-                                                </span>
-                                            </td>
-                                        </tr>
+                                    {% for item in results %}
+                                    <tr>
+                                        <td>{{ item.created_at|date:"Y-m-d H:i" }}</td>
+                                        <td>{{ item.input_text|truncatechars:100 }}</td>
+                                        <td>{{ item.matched_words|default:"-" }}</td> 
+                                        <td>{{ item.sentiment_label }}</td>
+                                        <td>{{ item.total_score }}</td>
+                                        <td colspan="2">
+                                            <button class="btn btn-sm btn-warning btnEdit"
+                                                data-id="{{ item.id }}"
+                                                data-token="{{ item.tokenized_words }}"
+                                                data-matched="{{ item.matched_words }}"
+                                                data-label="{{ item.sentiment_label }}"
+                                                data-score="{{ item.total_score }}">
+                                                Edit
+                                            </button>
+                                            <button class="btn btn-sm btn-danger btnDelete" data-id="{{ item.id }}">
+                                                Hapus
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr><td colspan="4">Belum ada data</td></tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
                         </div>
-                    {% else %}
-                        <div class="alert alert-warning">
-                            ❌ Belum ada riwayat permainan.
-                        </div>
-                    {% endif %}
-
-                    <a href="{% url 'mathgame' %}" class="btn btn-outline-primary mt-3">
-                        ← Kembali ke Game
-                    </a>
+                    </div>
                 </div>
+                
             </div>
         </div>
+        
     </div>
+    <!-- Modal Edit -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <form id="formEdit" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Analisis Sentimen</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editId">
+                <div class="mb-2">
+                    <label>Tokenized Words</label>
+                    <input type="text" id="editToken" class="form-control">
+                </div>
+                <div class="mb-2">
+                    <label>Matched Words</label>
+                    <input type="text" id="editMatched" class="form-control">
+                </div>
+                <div class="mb-2">
+                    <label>Label Sentimen</label>
+                    <select id="editLabel" class="form-select">
+                        <option value="positive">Positive</option>
+                        <option value="neutral">Neutral</option>
+                        <option value="negative">Negative</option>
+                    </select>
+                </div>
+                <div class="mb-2">
+                    <label>Total Skor</label>
+                    <input type="number" step="0.1" id="editScore" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            </div>
+            </form>
+        </div>
+    </div>
+
+
 </div>
+
+<!-- JS: jQuery + DataTables -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script>
+$(document).ready(function () {
+    //const table = $('#historyTable').DataTable();
+
+    let editModal = new bootstrap.Modal(document.getElementById('editModal'));
+
+    // === Handle Klik Edit ===
+    $('#historyTable').on('click', '.btnEdit', function () {
+        const id = $(this).data('id');
+        const token = $(this).data('token');
+        const matched = $(this).data('matched');
+        const label = $(this).data('label');
+        const score = $(this).data('score');
+        console.log($(this).data('matched_words'));
+
+        $('#editId').val(id);
+        $('#editToken').val(token);
+        $('#editMatched').val(matched);
+        $('#editLabel').val(label);
+        $('#editScore').val(score);
+
+        editModal.show();
+    });
+
+    // === Submit Form Edit ===
+    $('#formEdit').on('submit', function (e) {
+        e.preventDefault();
+
+        const id = $('#editId').val();
+        const tokenized_words = $('#editToken').val();
+        const sentiment_label = $('#editLabel').val();
+        const matched_words = $('#editMatched').val();
+        const total_score = $('#editScore').val();
+
+        $.ajax({
+            url: `/analisis_sentimen/sentiment_history/update/${id}/`,
+            method: 'POST',
+            headers: { "X-CSRFToken": "{{ csrf_token }}" },
+            data: {
+                tokenized_words,
+                matched_words,
+                sentiment_label,
+                total_score
+            },
+            success: function (res) {
+                alert(res.message);
+                editModal.hide();
+                location.reload();  // bisa diganti update row DataTables kalau mau
+            },
+            error: function (err) {
+                alert("Gagal mengupdate data.");
+            }
+        });
+    });
+});
+</script>
+
+{% comment %} <script>
+$(document).ready(function() {
+    $('#historyTable').DataTable({
+        language: {
+            search: "Cari:",
+            lengthMenu: "Tampilkan _MENU_ entri per halaman",
+            info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
+            paginate: {
+                previous: "Sebelumnya",
+                next: "Berikutnya"
+            },
+            zeroRecords: "Data tidak ditemukan",
+            infoEmpty: "Tidak ada entri yang ditampilkan"
+        }
+    });
+});
+</script> {% endcomment %}
+<script>
+$(document).ready(function () {
+    const table = $('#historyTable').DataTable({
+        responsive: true,
+        order: [[0, 'desc']],
+        language: {
+            search: "Cari:",
+            lengthMenu: "Tampilkan _MENU_ entri",
+            info: "Menampilkan _START_ sampai _END_ dari _TOTAL_",
+            paginate: {
+                previous: "Sebelumnya", next: "Berikutnya"
+            },
+            zeroRecords: "Data tidak ditemukan"
+        }
+    });
+
+    $('#historyTable tbody').on('click', '.btnDelete', function () {
+        const id = $(this).data('id');
+        if (!confirm('Yakin ingin menghapus data ini?')) return;
+
+        $.ajax({
+            url: `delete/${id}/`,
+            method: 'POST',
+            headers: { "X-CSRFToken": "{{ csrf_token }}" },
+            success: function (res) {
+                alert(res.message);
+                table.row($(this).parents('tr')).remove().draw();
+                location.reload();
+            },
+            error: function () {
+                alert("Gagal menghapus data.");
+            }
+        });
+    });
+});
+</script>
+
 {% endblock content %}

@@ -1,0 +1,35 @@
+{% extends "dashboard/base.html" %}
+{% block content %}
+
+<div class="container-fluid px-4">
+    <ol class="breadcrumb mt-3 mb-4">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item active">Secret Password</li>
+    </ol>
+    <div class="row">
+        <div class="card">
+            <div class="card-body">
+                <div class="row py-5 text-center">
+                    <h2 class="text-danger">⏳ Waktu Habis</h2>
+                    <p>Halaman telah ditutup otomatis demi keamanan.</p>
+
+                    <a href="{% url 'create_secret' %}" class="btn btn-primary mt-3">🔁 Buat Secret Baru</a>
+
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+</div>
+<script>
+function copySecret() {
+    var textArea = document.getElementById("secretMessage");
+    textArea.select();
+    textArea.setSelectionRange(0, 99999); // Untuk mobile
+    document.execCommand("copy");
+    alert("Pesan telah disalin ke clipboard.");
+}
+</script>
+{% comment %} {{div|safe}}     {% endcomment %}
+{% endblock content %}

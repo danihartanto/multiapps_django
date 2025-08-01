@@ -7,4 +7,5 @@ class CustomLogoutView(LoginRequiredMixin, AllauthLogoutView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['username'] = self.request.user.username  # Tambahan info user jika ingin ditampilkan
+        context['is_staff'] = self.request.user.is_staff  # Tambahan info user jika ingin ditampilkan
         return context

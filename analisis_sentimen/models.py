@@ -6,7 +6,6 @@ class SentimentResult(models.Model):
     input_text = models.TextField(help_text="Teks yang dianalisis")
     tokenized_words = models.TextField(help_text="Token hasil tokenisasi, dipisah koma", blank=True)
     matched_words = models.TextField(help_text="Kata yang cocok dengan leksikon beserta bobotnya", blank=True)
-    
     total_score = models.FloatField(help_text="Skor total dari hasil analisis")
     sentiment_label = models.CharField(max_length=10, choices=[
         ('positive', 'Positive'),

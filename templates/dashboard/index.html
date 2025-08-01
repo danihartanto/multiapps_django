@@ -10,7 +10,7 @@
     <div class="row">
         <div class="col-xl-3 col-md-6">
             <div class="card bg-primary text-white mb-4">
-                <div class="card-body">Kalkulator BMI</div>
+                <div class="card-body"><i class="bi bi-calculator fs-3 me-2"></i> Kalkulator BMI</div>
                 <div class="card-footer d-flex align-items-center justify-content-between">
                     <a class="small text-white stretched-link" href="{% url 'home' %}">View Details</a>
                     <div class="small text-white"><i class="fas fa-angle-right"></i></div>
@@ -19,7 +19,7 @@
         </div>
         <div class="col-xl-3 col-md-6">
             <div class="card bg-success text-white mb-4">
-                <div class="card-body">Task Jobs</div>
+                <div class="card-body"><i class="bi bi-card-checklist fs-3 me-2"></i> Task Jobs</div>
                 <div class="card-footer d-flex align-items-center justify-content-between">
                     <a class="small text-white stretched-link" href="{% url 'tasks' %}">View Details</a>
                     <div class="small text-white"><i class="fas fa-angle-right"></i></div>
@@ -28,7 +28,7 @@
         </div>
         <div class="col-xl-3 col-md-6">
             <div class="card bg-warning text-white mb-4">
-                <div class="card-body">Math Games</div>
+                <div class="card-body"><i class="bi bi-plus-slash-minus fs-3 me-2"></i> Math Games</div>
                 <div class="card-footer d-flex align-items-center justify-content-between">
                     <a class="small text-white stretched-link" href="{% url 'mathgame' %}">View Details</a>
                     <div class="small text-white"><i class="fas fa-angle-right"></i></div>
@@ -37,9 +37,36 @@
         </div>
         <div class="col-xl-3 col-md-6">
             <div class="card bg-danger text-white mb-4">
-                <div class="card-body">Tebak Huruf Game</div>
+                <div class="card-body"><i class="bi bi-alphabet-uppercase fs-3 me-2"></i> Tebak Huruf Game</div>
                 <div class="card-footer d-flex align-items-center justify-content-between">
                     <a class="small text-white stretched-link" href="{% url 'hangman' %}">View Details</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-dark text-white mb-4">
+                <div class="card-body"><i class="bi bi-lock-fill fs-3 me-2"></i>Secret Password Generator</div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href="{% url 'create_secret' %}">View Details</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-dark text-white mb-4">
+                <div class="card-body"><i class="bi bi-moisture fs-3 me-2"></i> Prediksi Cuaca</div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href="{% url 'weather' %}">View Details</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-dark text-white mb-4">
+                <div class="card-body"><i class="bi bi-bezier fs-3 me-2"></i> Analisis Sentimen</div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href="{% url 'analisis_sentimen' %}">View Details</a>
                     <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                 </div>
             </div>
@@ -50,7 +77,7 @@
             <div class="card mb-4">
                 <div class="card-header">
                     <i class="fas fa-chart-area me-1"></i>
-                    Leaderboard Mtah Games
+                    Leaderboard Math Games
                 </div>
                 <div class="card-body">
                     <table class="table table-striped mt-3">

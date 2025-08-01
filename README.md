@@ -115,3 +115,5 @@ Buka di browser: [http://127.0.0.1:8000](http://127.0.0.1:8000)
 ## ✅ Selesai!
 
 Selamat, proyek Django Anda sekarang sudah siap digunakan dan terhubung ke MySQL 🎉
+
+## develop by dani hartanto

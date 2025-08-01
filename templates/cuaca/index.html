@@ -1,0 +1,91 @@
+{% extends "dashboard/base.html" %}
+{% block content %}
+
+<div class="container-fluid px-4">
+    <ol class="breadcrumb mt-3 mb-4">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item active">Prakiraan Cuaca</li>
+    </ol>
+    <div class="row">
+        <h2>Prakiraan Cuaca Berdasarkan Wilayah</h2>
+
+    <label>Provinsi:</label>
+    <select id="provinsi">
+        <option value="">-- Pilih Provinsi --</option>
+        {% for kode, nama in provinsi_list %}
+            <option value="{{ kode }}">{{ nama }}</option>
+        {% endfor %}
+    </select>
+
+    <br><label>Kabupaten/Kota:</label>
+    <select id="kabupaten"></select>
+
+    <br><label>Kecamatan:</label>
+    <select id="kecamatan"></select>
+
+    <br><label>Kelurahan/Desa:</label>
+    <select id="kelurahan"></select>
+
+    <h3>Hasil Prakiraan Cuaca</h3>
+    <div id="hasil_cuaca"></div>
+
+    <script>
+        function loadWilayah(kode, level, target) {
+            $.get("{% url 'get_child_wilayah' %}", { kode: kode, level: level }, function(data) {
+                let html = '<option value="">-- Pilih --</option>';
+                data.forEach(function(item) {
+                    html += `<option value="${item.kode}">${item.nama}</option>`;
+                });
+                $(`#${target}`).html(html);
+                if (target !== 'kelurahan') {
+                    $('#hasil_cuaca').html('');
+                }
+            });
+        }
+
+        $('#provinsi').change(function() {
+            loadWilayah($(this).val(), 2, 'kabupaten');
+            $('#kecamatan').html('');
+            $('#kelurahan').html('');
+        });
+
+        $('#kabupaten').change(function() {
+            loadWilayah($(this).val(), 3, 'kecamatan');
+            $('#kelurahan').html('');
+        });
+
+        $('#kecamatan').change(function() {
+            loadWilayah($(this).val(), 4, 'kelurahan');
+        });
+
+        $('#kelurahan').change(function() {
+            let kode = $(this).val();
+            if (kode) {
+                $.get("{% url 'get_prakiraan' %}", { adm4: kode }, function(data) {
+                    if (data.length === 0) {
+                        $('#hasil_cuaca').html('<p>Tidak ada data cuaca.</p>');
+                        return;
+                    }
+                    let html = '<table border="1"><tr><th>Waktu</th><th>Cuaca</th><th>Suhu (°C)</th><th>Kelembapan (%)</th></tr>';
+                    data.forEach(function(item) {
+                        html += `<tr>
+                            <td>${item.jamCuaca}</td>
+                            <td>${item.cuaca}</td>
+                            <td>${item.suhu}</td>
+                            <td>${item.kelembapan}</td>
+                        </tr>`;
+                    });
+                    html += '</table>';
+                    $('#hasil_cuaca').html(html);
+                });
+            } else {
+                $('#hasil_cuaca').html('');
+            }
+        });
+    </script>
+        
+    </div>
+
+</div>
+{% comment %} {{div|safe}}     {% endcomment %}
+{% endblock content %}
