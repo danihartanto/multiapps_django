@@ -19,6 +19,10 @@ from django.urls import path, include
 from accounts.views import CustomLogoutView
 from landing.views import home
 
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
     path('', home, name='landing'),  # <-- landing page
     # path('', include("landing.urls")),#NEW
@@ -35,9 +39,14 @@ urlpatterns = [
     path('cuaca/', include('cuaca.urls')), #NEW
     path('secretpassword/', include('secret_password.urls')), #NEW
     path('backup/', include('backup_db.urls')), #NEW
+    path('charcount/', include('charcount.urls')), #NEW
+    path('news/', include('news_generator.urls')), #NEW
+    path('portfolio/', include('portfolio.urls')), #NEW
     path('accounts/', include('allauth.urls')),
     # path('accounts/', include('django.contrib.auth.urls')), 
     path("accounts/logout/", CustomLogoutView.as_view(), name="logout"),
     
-    
 ]
+# Hanya tambahkan baris ini jika DEBUG=True
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

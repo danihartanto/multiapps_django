@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portofolio - {{ portfolio.full_name }}</title>
+    
+    <style>
+        @page {
+            size: 21cm 29.7cm; /* A4 */
+            margin: 1.5cm;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #ffffff;
+            color: #333333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .portfolio-container {
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 20px 30px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin: 0 0 5px 0;
+            color: #111;
+        }
+
+        .contact-info {
+            text-align: center;
+            font-size: 1.5rem;
+            color: #555;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+
+        .contact-info a {
+            color: #007bff;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .section {
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #333;
+            border-bottom: 2px solid #333;
+            padding-bottom: 0px;
+            margin-bottom: 20px;
+        }
+
+        .entry {
+            margin-bottom: 25px;
+            page-break-inside: avoid; /* Mencegah item terpotong antar halaman */
+        }
+        
+        /* CSS BARU UNTUK TABEL LAYOUT */
+        .entry-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 5px;
+        }
+        
+        .info-cell {
+            width: 70%;
+            vertical-align: top;
+        }
+        
+        .date-cell {
+            width: 30%;
+            vertical-align: top;
+            text-align: right;
+            font-size: 1rem;
+            font-style: italic;
+            color: #666;
+        }
+        /* AKHIR CSS BARU */
+
+        h3 {
+            font-size: 1.2rem;
+            margin: 0;
+            color: #111;
+        }
+
+        .entry-meta {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #444;
+            margin: 2px 0;
+        }
+
+        .entry-description {
+            margin-top: 5px;
+            padding-left: 20px;
+        }
+
+        .entry-description li {
+            margin-bottom: 5px;
+        }
+
+        .skills-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .skills-list li {
+            display: inline-block;
+            background-color: #f0f0f0;
+            color: #333;
+            padding: 5px 12px;
+            margin: 4px;
+            border-radius: 5px;
+            font-size: 0.95rem;
+        }
+        .ringkasan {
+            text-align: justify;
+            text-justify: inter-word;
+        }
+    </style>
+</head>
+<body>
+
+    <main class="portfolio-container">
+        <header>
+            <h1>{{ portfolio.full_name }}</h1>
+            <div class="contact-info">
+                <span>{{ portfolio.email }}</span> &bull;
+                <span>{{ portfolio.phone_number }}</span> &bull;
+                {% if portfolio.linkedin_url %}<a href="{{ portfolio.linkedin_url }}" target="_blank">LinkedIn</a>{% endif %} &bull;
+                {% if portfolio.github_url %}<a href="{{ portfolio.github_url }}" target="_blank">GitHub</a>{% endif %}
+            </div>
+        </header>
+
+        <section class="section">
+            <h2 class="section-title">Ringkasan Profesional</h2>
+            <p class="ringkasan">
+                {{ portfolio.summary|linebreaksbr }}
+            </p>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Pendidikan</h2>
+            {% for edu in portfolio.educations.all %}
+            <div class="entry">
+                <table class="entry-table">
+                    <tr>
+                        <td class="info-cell">
+                            <h3>{{ edu.degree }} - {{ edu.field_of_study }}</h3>
+                            <div class="entry-meta">{{ edu.institution }}</div>
+                        </td>
+                        <td class="date-cell">
+                            {{ edu.start_date|date:"Y" }} - {{ edu.end_date|date:"Y" }}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <br>
+            {% endfor %}
+        </section>
+        
+        <section class="section">
+            <h2 class="section-title">Keterampilan Teknis</h2>
+            <ul class="skills-list">
+                {% for skill in skills_list %}
+                    <li>{{ skill }}</li>
+                {% endfor %}
+                
+            </ul>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Pengalaman Kerja</h2>
+            {% for exp in portfolio.experiences.all %}
+            <div class="entry">
+                <table class="entry-table">
+                    <tr>
+                        <td class="info-cell">
+                            <h3>{{ exp.job_title }}</h3>
+                            <div class="entry-meta">{{ exp.company }} - {{ exp.location }}</div>
+                        </td>
+                        <td class="date-cell">
+                            {{ exp.start_date|date:"F Y" }} - {% if exp.end_date %}{{ exp.end_date|date:"F Y" }}{% else %}Saat Ini{% endif %}
+                        </td>
+                    </tr>
+                </table>
+                <ul class="entry-description">
+                    <li class="ringkasan">{{ exp.description|linebreaksbr }}</li>
+                </ul>
+            </div>
+            {% endfor %}
+        </section>
+
+        
+        <section id="projects" class="section">
+            <h2 class="section-title">Proyek</h2>
+            {% for proj in portfolio.projects.all %}
+            <div class="entry">
+                <table class="entry-table">
+                    <tr>
+                        <td class="info-cell">
+                            <h3>{{ proj.project_name }}</h3>
+                            <div class="entry-meta"><strong>Teknologi:</strong> {{ proj.technologies_used }}</div>
+                        </td>
+                        
+                    </tr>
+                </table>
+                <ul class="entry-description">
+                    <li class="ringkasan">{{ proj.description|linebreaksbr }}</li>
+                </ul>        
+            </div>
+            {% endfor %}
+        </section>
+    </main>
+    
+</body>
+
+<script>
+    window.location.replace("{% url 'portfolio_pdf' %}?action=download");
+</script>
+</html>

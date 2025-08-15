@@ -1,0 +1,124 @@
+{% extends "dashboard/base.html" %}
+{% block content %}
+{% comment %} <title>Portofolio - {{ portfolio.full_name }}</title>  {% endcomment %}
+{% comment %} <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> {% endcomment %}
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Lora:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+    body {
+        font-family: 'Lato', sans-serif;
+        background-color: #ffffff;
+        color: #212529; /* Warna hitam lembut dari Bootstrap */
+    }
+    h1, h2, h3, .project-name, .job-title, .degree {
+        font-family: 'Lora', serif;
+        font-weight: 700;
+    }
+    .portfolio-header {
+        padding: 4rem 0;
+        text-align: center;
+        border-bottom: 1px solid #dee2e6;
+        background-color: #d0d0d0ff;
+    }
+    .contact-info a {
+        color: #212529;
+        text-decoration: none;
+        margin: 0 10px;
+    }
+    .contact-info a:hover {
+        text-decoration: underline;
+    }
+    .section {
+        padding: 3rem 0;
+    }
+    .section-title {
+        padding-bottom: 0.5rem;
+        margin-bottom: 2rem;
+        border-bottom: 2px solid #212529;
+        display: inline-block;
+    }
+    .skill-badge {
+        font-size: 0.9rem;
+        font-weight: 700;
+        background-color: #f8f9fa; /* Warna abu-abu sangat terang */
+        color: #212529;
+        border: 1px solid #dee2e6;
+    }
+    .timeline-item {
+        margin-bottom: 2rem;
+    }
+    .timeline-item .meta {
+        font-style: italic;
+        color: #6c757d; /* text-muted */
+    }
+</style>
+
+<header class="portfolio-header">
+    <h1 class="display-4">{{ portfolio.full_name }}</h1>
+    <p class="lead contact-info">
+        {{ portfolio.email }} &bull; {{ portfolio.phone_number }}
+        {% if portfolio.linkedin_url %} &bull; <a href="{{ portfolio.linkedin_url }}" target="_blank">LinkedIn</a>{% endif %}
+        {% if portfolio.github_url %} &bull; <a href="{{ portfolio.github_url }}" target="_blank">GitHub</a>{% endif %}
+    </p>
+</header>
+
+<main>
+    <section id="summary" class="section">
+        <h2 class="section-title">Ringkasan Profesional</h2>
+        <p class="lead">{{ portfolio.summary|linebreaksbr }}</p>
+    </section>
+
+    <section id="skills" class="section">
+        <h2 class="section-title">Keterampilan</h2>
+        <div class="d-flex flex-wrap">
+            {% for skill in skills_list %}
+                <span class="badge skill-badge p-2 m-1">{{ skill }}</span>
+            {% endfor %}
+        </div>
+    </section>
+    
+    <section id="experience" class="section">
+        <h2 class="section-title">Pengalaman Kerja</h2>
+        {% for exp in portfolio.experiences.all %}
+            <div class="timeline-item">
+                <h3 class="job-title mb-0">{{ exp.job_title }}</h3>
+                <div class="d-flex justify-content-between flex-wrap">
+                    <h4 class="h5 font-weight-bold">{{ exp.company }} - {{ exp.location }}</h4>
+                    <span class="meta">{{ exp.start_date|date:"F Y" }} - {% if exp.end_date %}{{ exp.end_date|date:"F Y" }}{% else %}Saat Ini{% endif %}</span>
+                </div>
+                <div class="mt-2">{{ exp.description|linebreaksbr }}</div>
+            </div>
+        {% endfor %}
+    </section>
+
+    <section id="education" class="section">
+        <h2 class="section-title">Pendidikan</h2>
+        {% for edu in portfolio.educations.all %}
+            <div class="timeline-item">
+                <h4 class="degree mb-0">{{ edu.degree }}, {{ edu.field_of_study }}</h4>
+                <div class="d-flex justify-content-between flex-wrap">
+                    <h4 class="h5 font-weight-bold">{{ edu.institution }}</h4>
+                    <span class="meta">{{ edu.start_date|date:"Y" }} - {{ edu.end_date|date:"Y" }}</span>
+                </div>
+            </div>
+        {% endfor %}
+    </section>
+    
+    <section id="projects" class="section">
+        <h2 class="section-title">Proyek</h2>
+        {% for proj in portfolio.projects.all %}
+            <div class="timeline-item">
+                <h4 class="project-name mb-0">{{ proj.project_name }}</h4>
+                <p class="meta"><strong>Teknologi:</strong> {{ proj.technologies_used }}</p>
+                <p>{{ proj.description|linebreaksbr }}</p>
+                {% if proj.project_url %}
+                    <a href="{{ proj.project_url }}" class="btn btn-outline-dark" target="_blank">Lihat Proyek</a>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </section>
+</main>
+
+
+{% comment %} {{div|safe}}     {% endcomment %}
+{% endblock content %}

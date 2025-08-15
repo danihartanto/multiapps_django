@@ -1,0 +1,71 @@
+{% extends "dashboard/base.html" %}
+{% block content %}
+
+<div class="container-fluid px-4">
+    <ol class="breadcrumb mt-3 mb-4">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item active">Log Activity</li>
+    </ol>
+    <div class="row">
+        <div class="card rounded-3 mt-4">
+            <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
+                <h1 class="mb-0"><i class="bi bi-trash"></i> Delete Confirmation</h1>
+            </div>
+            
+            <div class="card-body">
+                <div class="row">
+                    {% comment %} <h1 class="text-2xl font-bold text-gray-800 mb-4">Konfirmasi Penghapusan</h1> {% endcomment %}
+                    {% comment %} <p class="text-gray-600 mb-6">
+                        Apakah Anda yakin ingin menghapus berita ini? Tindakan ini tidak bisa dibatalkan.
+                    </p> {% endcomment %}
+                    
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
+                                <h5 class="mb-0">📖 Review</h5>
+                                <div class="text-black py-2 px-4 rounded-pill mt-2 mt-md-0">
+                                    <form method="post" action="{% url 'news_app:delete' article.id %}">
+                                        {% csrf_token %}
+                                        <div class="flex justify-center space-x-4">
+                                            <button type="submit" class="btn btn-danger px-6 py-2 border border-transparent text-base font-medium rounded-full shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                                Ya, Hapus
+                                            </button>
+                                            <a href="{% url 'news_app:list' %}" class="btn btn-warning px-6 py-2 border border-gray-300 text-base font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                                Batal
+                                            </a>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="card-footer text-muted">
+                                <blockquote class="blockquote mb-0">
+                                <h1 class="text-3xl font-bold text-gray-800 mb-2 text-center py-4 mx-2 my-5">
+                                    {{ article.judul|truncatewords:10|safe }}
+                                </h1>
+                                <div class="prose max-w-none text-gray-700 leading-relaxed border-t border-gray-200 pt-6 mt-6">
+                                    <p style="white-space: pre-wrap;">{{ article.generated_content|safe }}</p>
+                                </div>
+                                </blockquote>
+                            </div>
+
+
+
+                        </li>
+                    </ul>
+                    
+                    
+
+                    
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+
+</div>
+
+
+{% comment %} {{div|safe}}     {% endcomment %}
+{% endblock content %}

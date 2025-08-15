@@ -1,0 +1,108 @@
+{% extends "dashboard/base.html" %}
+{% block content %}
+
+<div class="container-fluid px-4">
+    <ol class="breadcrumb mt-3 mb-4">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'news_app:list' %}">News List</a></li>
+        <li class="breadcrumb-item active">Update</li>
+    </ol>
+    <div class="row">
+        <div class="card rounded-3 mt-4">
+            <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
+                <h5 class="mb-0">📖 News Lists</h5>
+                <div class="text-black py-2 px-4 rounded-pill mt-2 mt-md-0">
+                        <a href="{% url 'news_app:generator' %}" class="text-success fw-bold">
+                                + Buat Berita Baru
+                            </a>
+                    </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="bg-white rounded-xl shadow-lg p-6 md:p-10 w-full max-w-4xl">
+                        <div class="flex justify-between items-center mb-6">
+                            <h1 class="text-3xl font-bold text-center text-gray-800">Edit Berita</h1>
+                            <a href="{% url 'news_app:list' %}" class="flex items-center text-indigo-600 hover:text-indigo-800 font-medium">
+                                Kembali
+                            </a>
+                        </div>
+
+                        <form method="post" enctype="multipart/form-data" class="space-y-6">
+                            {% csrf_token %}
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-5">
+                                {% for field in form %}
+                                    {% if field.name != 'image' and field.name != 'generated_content' %}
+                                        <div>
+                                            <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 capitalize">
+                                                {{ field.label }}
+                                            </label>
+                                            {{ field }}
+                                            {% if field.errors %}
+                                                <ul class="text-red-600 text-sm mt-1">
+                                                    {% for error in field.errors %}
+                                                        <li>{{ error }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+
+                            <!-- Input untuk generated_content -->
+                            <div class="mt-5 mb-4">
+                                <label for="{{ form.generated_content.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                                    Konten Berita
+                                </label>
+                                {{ form.generated_content }}
+                                {% if form.generated_content.errors %}
+                                    <ul class="text-red-600 text-sm mt-1">
+                                        {% for error in form.generated_content.errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            </div>
+
+                            <div class="mt-5">
+                                <label for="id_image" class="block text-sm font-medium text-gray-700">
+                                    Gambar
+                                </label>
+                                <input type="file" id="id_image" name="image" accept="image/*" class="mt-1 block w-full text-sm text-gray-500
+                                file:mr-4 file:py-2 file:px-4
+                                file:rounded-full file:border-0
+                                file:text-sm file:font-semibold
+                                file:bg-indigo-50 file:text-indigo-700
+                                hover:file:bg-indigo-100">
+                                <div class="p-6 mx-2 py-2">
+                                    Gambar saat ini:
+                                    {% if article.image %}
+                                        <img src="{{ article.image.url }}" alt="Gambar Berita" class="img-fluid w-25 mx-auto">
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="text-center mt-5 mb-4">
+                                <button type="submit" class="btn btn-primary w-full md:w-auto border border-transparent text-base font-medium rounded-full shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                    Simpan Perubahan
+                                </button>
+                                <a href="{% url 'news_app:list' %}" class="btn btn-warning w-full md:w-auto border border-transparent text-base font-medium rounded-full shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                    Batal
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+
+</div>
+
+
+{% comment %} {{div|safe}}     {% endcomment %}
+{% endblock content %}

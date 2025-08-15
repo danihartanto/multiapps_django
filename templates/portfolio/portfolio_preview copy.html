@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portofolio Online - [Nama Anda]">
+    <title>Portofolio - {{ portfolio.full_name }}</title>
+    
+    <style>
+        /* == PENGATURAN DASAR & FONT == */
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #ffffff;
+            color: #333333;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* == KONTAINER UTAMA == */
+        /* Tata letak satu kolom yang berpusat untuk keterbacaan maksimal */
+        .portfolio-container {
+            max-width: 950px;
+            margin: 40px auto; /* Memberi jarak atas/bawah dan memusatkan secara horizontal */
+            padding: 20px 30px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* == HEADER & INFO KONTAK == */
+        h1 {
+            font-size: 2.5rem; /* 40px */
+            text-align: center;
+            margin: 0 0 5px 0;
+            color: #111;
+        }
+
+        .contact-info {
+            text-align: center;
+            font-size: 0.95rem; /* 15px */
+            color: #555;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 20px;
+        }
+
+        .contact-info a {
+            color: #007bff;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+
+        /* == STRUKTUR SECTION == */
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.5rem; /* 24px */
+            color: #333;
+            border-bottom: 2px solid #333;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+        }
+
+        /* == PENGALAMAN & PENDIDIKAN == */
+        .entry {
+            margin-bottom: 20px;
+        }
+        /* INI ADALAH ATURAN CSS BARU YANG PENTING */
+        .entry-header {
+            display: flex; /* Mengaktifkan Flexbox */
+            justify-content: space-between; /* Mendorong item ke ujung berlawanan */
+            align-items: flex-start; /* Menjaga item tetap rata di bagian atas */
+            margin-bottom: 8px; /* Memberi sedikit jarak ke deskripsi di bawahnya */
+        }
+
+        h3 {
+            font-size: 1.2rem; /* 19px */
+            margin: 0;
+            color: #111;
+        }
+
+        .entry-meta {
+            font-size: 1rem; /* 16px */
+            font-weight: bold;
+            color: #444;
+            margin: 2px 0;
+        }
+        
+        .entry-date {
+            /* Pastikan tanggal tidak terlalu mepet ke kiri jika teksnya panjang */
+            flex-shrink: 0; 
+            padding-left: 20px;
+        }
+
+        .entry-description {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+
+        .entry-description li {
+            margin-bottom: 5px;
+        }
+
+        .h3 {
+            font-size: 1.2rem; /* 19px */
+            margin: 0;
+            color: #111;
+        }
+
+        .entry-meta {
+            font-size: 1rem; /* 16px */
+            font-weight: bold;
+            color: #444;
+            margin: 2px 0;
+            margin-left: 8px;
+        }
+
+        .entry-date {
+            font-size: 1rem; /* 16px */
+            font-style: italic;
+            color: #666;
+        }
+
+        .entry-description {
+            font-size: 0.9rem; /* 14px */
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+
+        /* == KETERAMPILAN / SKILLS == */
+        .skills-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .skills-list li {
+            display: inline-block;
+            background-color: #f0f0f0;
+            color: #333;
+            padding: 5px 12px;
+            margin: 4px;
+            border-radius: 5px;
+            font-size: 0.95rem;
+        }
+
+    </style>
+</head>
+<body>
+
+    <main class="portfolio-container">
+        <header>
+            <h1>{{ portfolio.full_name }}</h1>
+            <div class="contact-info">
+                {{ portfolio.email }} &bull; {{ portfolio.phone_number }}
+                {% if portfolio.linkedin_url %}&bull; <a href="{{ portfolio.linkedin_url }}" target="_blank">LinkedIn</a>{% endif %}
+                {% if portfolio.github_url %}&bull; <a href="{{ portfolio.github_url }}" target="_blank">GitHub</a>{% endif %}
+                {% comment %} <a href="https://github.com/[usernameanda]" target="_blank">GitHub</a> {% endcomment %}
+            </div>
+        </header>
+
+        <section class="section">
+            <h2 class="section-title">Ringkasan Profesional</h2>
+            <p>
+                {{ portfolio.summary|linebreaksbr }}
+            </p>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Keterampilan Teknis</h2>
+            <ul class="skills-list">
+                {% for skill in skills_list %}
+                    <li>{{ skill }}</li>
+                {% endfor %}
+                
+            </ul>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Pengalaman Kerja</h2>
+            {% for exp in portfolio.experiences.all %}
+                <div class="entry">
+                    <div class="entry-header">
+                        <div class="entry-info">
+                            <h3>{{ exp.job_title }}</h3>
+                            <div class="entry-meta">{{ exp.company }} - {{ exp.location }}</div>
+                        </div>
+                        <div class="entry-date">
+                            {{ exp.start_date|date:"F Y" }} - {% if exp.end_date %}{{ exp.end_date|date:"F Y" }}{% else %}Saat Ini{% endif %}
+                        </div> 
+                    </div>
+                    <ul class="entry-description">
+                        <li>{{ exp.description|linebreaksbr }}</li>
+                    </ul>
+                </div>
+            {% endfor %}
+
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Pendidikan</h2>
+            {% for edu in portfolio.educations.all %}
+                <div class="entry">
+                    <div class="entry-header">
+                        <div class="entry-info">
+                            <h3>{{ edu.degree }}, {{ edu.field_of_study }}</h3>
+                            <div class="entry-meta">{{ edu.institution }}</div>
+                        </div>
+                        <div class="entry-date">
+                            {{ edu.start_date|date:"Y" }} - {{ edu.end_date|date:"Y" }}
+                        </div>
+                    </div>
+                    
+                </div>
+            {% endfor %}
+            
+            
+            
+        </section>
+
+    </main>
+    
+</body>
+<script>
+    window.location.replace("{% url 'portfolio_pdf' %}?action=download");
+</script>
+</html>

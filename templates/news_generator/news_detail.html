@@ -1,0 +1,71 @@
+{% extends "dashboard/base.html" %}
+{% block content %}
+
+<div class="container-fluid px-4">
+    <ol class="breadcrumb mt-3 mb-4">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'news_app:list' %}">News List</a></li>
+        <li class="breadcrumb-item active">Detail</li>
+    </ol>
+    <div class="row">
+        <div class="card rounded-3 mt-4">
+            <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
+                <h5 class="mb-0">📖 News Details</h5>
+                <div class="text-black py-2 px-4 rounded-pill mt-2 mt-md-0">
+                        <a href="{% url 'news_app:generator' %}" class="text-success fw-bold">
+                                + Buat Berita Baru
+                            </a>
+                    </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="flex justify-between items-center mb-6">
+                        <a href="{% url 'news_app:list' %}" class="flex items-center text-indigo-600 hover:text-indigo-800 font-medium">
+                            Kembali ke Daftar Berita
+                        </a>
+                    </div>
+
+                    {% if article %}
+                        <div class="row text-center">
+                            {% if article.image %}
+                                <img src="{{ article.image.url }}" alt="Gambar Berita" class="img-fluid w-50 mx-auto">
+                            {% endif %}
+
+                        </div>
+                        <h1 class="text-3xl font-bold text-gray-800 mb-2 text-center py-4 mx-2 my-5">
+                            {{ article.judul|safe }}
+                        </h1>
+                        <p class="text-gray-600 text-sm mb-6">
+                            <i class="small bg-success text-white py-2">
+                                <br> - <i class="bi bi-calendar-date"></i> Di Tulis pada: <span class="font-medium">{{ article.created_at|date:"d M Y" }}</span> | Penulis: <span class="font-medium">{{ article.creator.username|default:"Not Edited" }}</span> 
+                                <br> - <i class="bi bi-calendar-date"></i> Di Terbitkan pada: <span class="font-medium">{{ article.diterbitkan_pada|date:"d M Y" }}</span> | Editor: <span class="font-medium">{{ article.editor.username|default:"Not Edited" }}</span> 
+                            </i>
+                        </p>
+
+                        <div class="prose max-w-none text-gray-700 leading-relaxed border-t border-gray-200 pt-6 mt-6">
+                            <p style="white-space: pre-wrap;">{{ article.generated_content|safe }}</p>
+                        </div>
+
+                        <div class="row mt-5">
+                            <p class="text-gray-600 text-sm mb-6">
+                                <i class="small">
+                                     <span class="font-medium text-primary">{{ article.hashtag|default:"No Hashtag" }}</span>
+                                </i>
+                            </p>
+                        </div>
+                    {% else %}
+                        <p class="text-center text-gray-500">Artikel tidak ditemukan.</p>
+                    {% endif %}
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+
+</div>
+
+
+{% comment %} {{div|safe}}     {% endcomment %}
+{% endblock content %}

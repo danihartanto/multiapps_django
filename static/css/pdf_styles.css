@@ -1,0 +1,43 @@
+/* Import font jika diperlukan (pastikan file font ada di server) */
+/*
+@font-face {
+    font-family: "Lato";
+    src: url("/path/to/static/fonts/Lato-Regular.ttf");
+}
+*/
+
+body {
+    font-family: "Helvetica", "Arial", sans-serif;
+    color: #333333; /* Warna teks abu-abu tua, bukan hitam pekat */
+    line-height: 1.5;
+}
+
+/* --- Warna --- */
+.header-background {
+    background-color: #f8f9fa; /* Warna latar header abu-abu terang */
+    padding: 20px;
+    border-bottom: 2px solid #dee2e6;
+    text-align: center;
+}
+
+.section-title {
+    color: #0056b3; /* Warna biru untuk judul bagian */
+    border-bottom: 2px solid #0056b3;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+    display: inline-block; /* Agar border hanya sepanjang teks */
+}
+
+.text-muted {
+    color: #6c757d;
+}
+
+/* --- Elemen Lain --- */
+h1, h2, h3 {
+    font-family: "Times New Roman", serif;
+    font-weight: bold;
+}
+
+.mb-4 {
+    margin-bottom: 1.5rem;
+}

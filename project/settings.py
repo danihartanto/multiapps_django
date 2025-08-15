@@ -49,6 +49,9 @@ INSTALLED_APPS = [
     'cuaca',
     'secret_password',
     'backup_db',
+    'charcount',
+    'news_generator',
+    'portfolio',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -103,22 +106,22 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.mysql',
-    #     'NAME': 'db_django_v2',
-    #     'USER': 'root',
-    #     'PASSWORD': '',
-    #     'HOST': 'localhost',
-    #     'PORT': '3308', 
-    # },
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'emdehateam@default',
-        'USER': 'emdehateam',
-        'PASSWORD': 'Emdeha12345',
-        'HOST': 'emdehateam.mysql.pythonanywhere-services.com',
-        'PORT': '3306', 
+        'NAME': 'db_django_v2',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '3308', 
     },
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'emdehateam@default',
+    #     'USER': 'emdehateam',
+    #     'PASSWORD': 'Emdeha12345',
+    #     'HOST': 'emdehateam.mysql.pythonanywhere-services.com',
+    #     'PORT': '3306', 
+    # },
     'default_sqlite': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',

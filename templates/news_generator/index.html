@@ -1,0 +1,121 @@
+{% extends "dashboard/base.html" %}
+{% block content %}
+
+<div class="container-fluid px-4">
+    <ol class="breadcrumb mt-3 mb-4">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'news_app:list' %}">News List</a></li>
+        <li class="breadcrumb-item active">Create New</li>
+    </ol>
+    <div class="row">
+        <div class="card rounded-3 mt-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">📖 News Generator</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% comment %} <div class="flex flex-col items-center p-4 md:p-8"> {% endcomment %}
+                        {% comment %} <div class="bg-white rounded-xl shadow-lg p-6 md:p-10 w-full max-w-4xl"> {% endcomment %}
+                            {% comment %} <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Generator Berita</h1> {% endcomment %}
+                            <p class="text-start text-gray-600 mb-8">
+                                Masukkan detail dasar peristiwa, dan kami akan membuatkan artikel berita lengkap untuk Anda.
+                            </p>
+
+                            <form method="post" enctype="multipart/form-data" class="space-y-6">
+                                {% csrf_token %}
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <!-- Rendering field form secara manual untuk kontrol lebih baik -->
+                                    {% for field in form %}
+                                        {% if field.name != 'image' %}
+                                            <div>
+                                                <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 capitalize mt-4">
+                                                    {{ field.label }}
+                                                </label>
+                                                {{ field }}
+                                                {% if field.errors %}
+                                                    <ul class="text-red-600 text-sm mt-1">
+                                                        {% for error in field.errors %}
+                                                            <li>{{ error }}</li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+
+                                <!-- Input untuk gambar -->
+                                <div class="mt-5">
+                                    <label for="id_image" class="block text-sm font-medium text-gray-700">
+                                        Gambar
+                                    </label>
+                                    <input type="file" id="id_image" name="image" accept="image/*" class="mt-1 form-control block w-full text-sm text-gray-500
+                                    file:mr-4 file:py-2 file:px-4
+                                    file:rounded-full file:border-0
+                                    file:text-sm file:font-semibold
+                                    file:bg-indigo-50 file:text-indigo-700
+                                    hover:file:bg-indigo-100">
+                                </div>
+
+                                <!-- Tombol untuk submit form -->
+                                {% comment %} <div class="text-center mt-8">
+                                    <button type="submit" class="w-full btn btn-info m-4 p-4">
+                                        Generate Berita
+                                    </button>
+                                </div> {% endcomment %}
+                                <button type="submit" id="submit-btn" class="btn btn-success mt-5 w-full md:w-auto border border-transparent text-base font-medium rounded-full shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                    <div class="flex items-center justify-center">
+                                        <span id="btn-text">Generate Berita</span>
+                                    </div>
+                                </button>
+                                <a href="{% url 'news_app:list' %}" class="btn btn-warning mt-5 w-full md:w-auto border border-transparent text-base font-medium rounded-full shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                    Batal
+                                </a>
+                            </form>
+
+                            <!-- Area untuk menampilkan error atau berita yang dihasilkan -->
+                            {% if generated_text %}
+                                <div class="mt-10 pt-6 border-t border-gray-200">
+                                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Artikel Berita yang Dihasilkan</h2>
+                                    <div class="prose max-w-none text-gray-700 leading-relaxed">
+                                        {% if news_article.image %}
+                                            <img src="{{ news_article.image.url }}" alt="Gambar Berita" class="mb-4 rounded-lg shadow-md max-w-full h-auto">
+                                        {% endif %}
+                                        <p style="white-space: pre-wrap;">{{ generated_text }}</p>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% comment %} </div> {% endcomment %}
+                    {% comment %} </div> {% endcomment %}
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+
+</div>
+
+<!-- jQuery CDN -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Tangani submit form
+        $("#news-form").on("submit", function() {
+            const submitBtn = $("#submit-btn");
+            const btnText = $("#btn-text");
+
+            // Ubah tampilan tombol menjadi loading
+            submitBtn.prop("disabled", true);
+            submitBtn.removeClass("bg-indigo-600 hover:bg-indigo-700").addClass("bg-indigo-400 cursor-not-allowed");
+            
+            // Tambahkan spinner dan ubah teks
+            btnText.html('<div class="spinner"></div><span class="ml-2">Sedang Membuat Berita...</span>');
+        });
+    });
+</script>
+
+{% comment %} {{div|safe}}     {% endcomment %}
+{% endblock content %}
